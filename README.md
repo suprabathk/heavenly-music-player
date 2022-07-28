@@ -1,6 +1,6 @@
 # heavenly
 
-Get closer to nature
+Find your inner-peace
 
 ## Getting Started
 
