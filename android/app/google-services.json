@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "80696327892",
+    "project_id": "heavenly-sound-player",
+    "storage_bucket": "heavenly-sound-player.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80696327892:android:20fb6c5573acbe3ef64541",
+        "android_client_info": {
+          "package_name": "com.suprabath.heavenly.heavenly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "80696327892-jb8vgp2kkkac8qamii5o1e2527vbc8n5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjJRV_VogLD5t85GFM6eSZkJiy04OFTXI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "80696327892-jb8vgp2kkkac8qamii5o1e2527vbc8n5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
