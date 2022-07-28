@@ -84,9 +84,6 @@ flutter:
     - family: Cheva
       fonts:
         - asset: fonts/Cheva/ChevaDisplay.otf
-    - family: Josefin
-      fonts:
-        - asset: fonts/Josefin/JosefinSans-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
