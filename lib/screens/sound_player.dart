@@ -1,19 +1,22 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+final storageRef = FirebaseStorage.instance.ref();
 
 class SoundPlayer extends StatelessWidget {
   const SoundPlayer(
       {Key? key,
       required this.title,
       required this.image,
-      required this.source})
+      required this.fileName})
       : super(key: key);
 
   final String title;
   final String image;
-  final String source;
+  final String fileName;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +145,7 @@ class SoundPlayer extends StatelessWidget {
                   ),
                   child: SoundPlayerControls(
                     title: title,
-                    source: UrlSource(source),
+                    fileName: fileName,
                   ),
                 ),
               ],
@@ -156,10 +159,10 @@ class SoundPlayer extends StatelessWidget {
 
 class SoundPlayerControls extends StatefulWidget {
   const SoundPlayerControls(
-      {Key? key, required this.title, required this.source})
+      {Key? key, required this.title, required this.fileName})
       : super(key: key);
   final String title;
-  final Source source;
+  final String fileName;
 
   @override
   State<SoundPlayerControls> createState() => _SoundPlayerControlsState();
@@ -167,15 +170,19 @@ class SoundPlayerControls extends StatefulWidget {
 
 class _SoundPlayerControlsState extends State<SoundPlayerControls> {
   late AudioPlayer player;
-  late Duration duration = const Duration();
-  late Duration position = const Duration();
+  Duration duration = const Duration();
+  Duration position = const Duration();
+  late Source fileSource;
   bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     player = AudioPlayer();
-    player.setSource(widget.source);
+    storageRef.child(widget.fileName).getDownloadURL().then((value) {
+      player.setSource(UrlSource(value));
+    });
+
     //automatically set duration
     player.onDurationChanged.listen((Duration d) {
       setState(() => duration = d);

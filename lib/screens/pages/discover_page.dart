@@ -48,7 +48,9 @@ class _DiscoverPageState extends State<DiscoverPage>
                       builder: (context) => SoundPlayer(
                         title: sound.get('title'),
                         image: sound.get('image'),
-                        source: sound.get('sound'),
+                        // change hardcoded index to collectionIndex after populating database
+                        fileName:
+                            'Music/${categoryNamesList.elementAt(0)}/${sound.get('file_name')}',
                       ),
                     ),
                   );
