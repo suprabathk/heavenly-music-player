@@ -3,10 +3,11 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:heavenly/miscellaneous/loading_image.dart';
 
 final storageRef = FirebaseStorage.instance.ref();
 
-class SoundPlayer extends StatelessWidget {
+class SoundPlayer extends StatefulWidget {
   const SoundPlayer(
       {Key? key,
       required this.title,
@@ -19,6 +20,23 @@ class SoundPlayer extends StatelessWidget {
   final String fileName;
 
   @override
+  State<SoundPlayer> createState() => _SoundPlayerState();
+}
+
+class _SoundPlayerState extends State<SoundPlayer> {
+  String imageURL = loadingImage;
+
+  @override
+  void initState() {
+    storageRef.child(widget.image).getDownloadURL().then((value) {
+      setState(() {
+        imageURL = value;
+      });
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
@@ -29,7 +47,7 @@ class SoundPlayer extends StatelessWidget {
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.fitHeight,
-                image: NetworkImage(image),
+                image: NetworkImage(imageURL),
               ),
             ),
           ),
@@ -117,7 +135,7 @@ class SoundPlayer extends StatelessWidget {
                 ),
                 GlassmorphicContainer(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height / 2.3,
+                  height: MediaQuery.of(context).size.height / 2.1,
                   margin:
                       const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
                   borderRadius: 20,
@@ -144,8 +162,8 @@ class SoundPlayer extends StatelessWidget {
                     ],
                   ),
                   child: SoundPlayerControls(
-                    title: title,
-                    fileName: fileName,
+                    title: widget.title,
+                    fileName: widget.fileName,
                   ),
                 ),
               ],

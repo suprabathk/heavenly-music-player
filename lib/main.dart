@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:heavenly/screens/add_sound.dart';
 import 'package:heavenly/screens/home_screen.dart';
 import 'package:heavenly/screens/splash_screen.dart';
 
@@ -19,22 +20,28 @@ class Heavenly extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.light().copyWith(
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle(
-              statusBarIconBrightness: Brightness.dark,
-              statusBarColor: Colors.transparent),
+    return AnnotatedRegion(
+      value: const SystemUiOverlayStyle(
+          statusBarIconBrightness: Brightness.dark,
+          statusBarColor: Colors.transparent),
+      child: MaterialApp(
+        theme: ThemeData.light().copyWith(
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarIconBrightness: Brightness.dark,
+                statusBarColor: Colors.transparent),
+          ),
+          scaffoldBackgroundColor: Colors.white,
         ),
-        scaffoldBackgroundColor: Colors.white,
+        routes: {
+          'welcome': (context) => const WelcomeScreen(),
+          'home': (context) => const HomePage(),
+          'add_sound': (context) => const AddSound(),
+        },
+        initialRoute: 'welcome',
       ),
-      routes: {
-        'welcome': (context) => const WelcomeScreen(),
-        'home': (context) => const HomePage(),
-      },
-      initialRoute: 'welcome',
     );
   }
 }

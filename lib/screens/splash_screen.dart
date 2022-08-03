@@ -33,28 +33,26 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: Column(
-          children: [
-            Lottie.asset(
-              'assets/animations/greenStarLogo.json',
-              repeat: false,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Lottie.asset(
+            'assets/animations/greenStarLogo.json',
+            repeat: false,
+          ),
+          const Text(
+            'Heavenly',
+            style: TextStyle(
+              fontFamily: 'Cheva',
+              fontSize: 50,
             ),
-            const Text(
-              'Heavenly',
-              style: TextStyle(
-                fontFamily: 'Cheva',
-                fontSize: 50,
-              ),
-            ),
-            Text(
-              'Find your inner-peace',
-              style: GoogleFonts.josefinSans(
-                  textStyle: const TextStyle(fontSize: 20)),
-            ),
-          ],
-        ),
+          ),
+          Text(
+            'Find your inner-peace',
+            style: GoogleFonts.josefinSans(
+                textStyle: const TextStyle(fontSize: 20)),
+          ),
+        ],
       ),
     );
   }

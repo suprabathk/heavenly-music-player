@@ -19,7 +19,7 @@ class _DiscoverPageState extends State<DiscoverPage>
   List categoryNamesList = [];
 
   void getTabData() async {
-    return await firestore
+    await firestore
         .collection('category_names')
         .get()
         .then((QuerySnapshot? querySnapshot) {
@@ -47,16 +47,18 @@ class _DiscoverPageState extends State<DiscoverPage>
                     MaterialPageRoute(
                       builder: (context) => SoundPlayer(
                         title: sound.get('title'),
-                        image: sound.get('image'),
+                        image:
+                            'Images/${categoryNamesList.elementAt(collectionIndex)}/${sound.get('image')}',
                         // change hardcoded index to collectionIndex after populating database
                         fileName:
-                            'Music/${categoryNamesList.elementAt(0)}/${sound.get('file_name')}',
+                            'Music/${categoryNamesList.elementAt(collectionIndex)}/${sound.get('file_name')}',
                       ),
                     ),
                   );
                 },
                 child: DisplayCard(
-                  cardImage: sound.get('image'),
+                  cardImage:
+                      'Images/${categoryNamesList.elementAt(collectionIndex)}/${sound.get('image')}',
                   cardTitle: sound.get('title'),
                   cardSubTitle: sound.get('description'),
                 ),
