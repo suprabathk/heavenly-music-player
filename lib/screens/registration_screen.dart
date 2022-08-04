@@ -25,8 +25,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
   String email = '';
-  late String password;
-  String displayName = '';
+  String password = "";
+  late String displayName;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +108,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     child: TextField(
                       style: const TextStyle(color: Colors.black),
                       onChanged: (value) {
-                        password = value;
+                        displayName = value;
                       },
                       decoration:
                           kTextFieldDecoration.copyWith(hintText: 'Username'),
@@ -121,7 +121,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       style: const TextStyle(color: Colors.black),
                       obscureText: true,
                       onChanged: (value) {
-                        displayName = value;
+                        password = value;
                       },
                       decoration:
                           kTextFieldDecoration.copyWith(hintText: 'Password')),
@@ -150,11 +150,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           idToken: googleAuth.idToken,
                         );
 
-                        final exUser = await FirebaseAuth.instance
+                        await FirebaseAuth.instance
                             .signInWithCredential(credential);
-                        if (exUser != null) {
-                          Navigator.pushNamed(context, 'home');
-                        }
+                        Navigator.pushNamed(context, 'home');
                       },
                       style: const AuthButtonStyle(
                           iconType: AuthIconType.secondary),
@@ -185,7 +183,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                   ),
                   RoundButton(
-                    key: Key('null'),
+                    key: const Key('null'),
                     color: Colors.white,
                     text: 'Register',
                     onpress: () async {
@@ -194,18 +192,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           showSpinner = true;
                         });
 
-                        final newUser =
-                            await _auth.createUserWithEmailAndPassword(
-                                email: email, password: password);
-
-                        if (newUser != null) {
-                          Navigator.pushNamed(context, 'home');
-                          setState(() {
-                            showSpinner = false;
-                          });
-                        }
+                        await _auth.createUserWithEmailAndPassword(
+                            email: email, password: password);
+                        var user = FirebaseAuth.instance.currentUser;
+                        user?.updateDisplayName(displayName);
+                        Navigator.pushNamed(context, 'home');
+                        setState(() {
+                          showSpinner = false;
+                        });
                       } catch (e) {
-                        //print(e);
+                        print(e);
                       }
                     },
                   ),

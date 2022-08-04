@@ -24,7 +24,8 @@ class _LoginScreenState extends State<LoginScreen> {
   bool showSpinner = false;
   final _auth = FirebaseAuth.instance;
   String email = "";
-  late String password;
+  String password = "";
+  String msg = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,30 +125,30 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
-                      child: GoogleAuthButton(
-                        themeMode: ThemeMode.light,
-                        onPressed: () async {
-                          final googleUser = await googleSignIn.signIn();
-                          if (googleUser == null) return;
-                          _user = googleUser;
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: GoogleAuthButton(
+                      themeMode: ThemeMode.light,
+                      onPressed: () async {
+                        final googleUser = await googleSignIn.signIn();
+                        if (googleUser == null) return;
+                        _user = googleUser;
 
-                          final googleAuth = await googleUser.authentication;
+                        final googleAuth = await googleUser.authentication;
 
-                          final credential = GoogleAuthProvider.credential(
-                            accessToken: googleAuth.accessToken,
-                            idToken: googleAuth.idToken,
-                          );
+                        final credential = GoogleAuthProvider.credential(
+                          accessToken: googleAuth.accessToken,
+                          idToken: googleAuth.idToken,
+                        );
 
-                          final exUser = await FirebaseAuth.instance
-                              .signInWithCredential(credential);
-                          if (exUser != null) {
-                            Navigator.pushNamed(context, 'home');
-                          }
-                        },
-                        style: const AuthButtonStyle(
-                            iconType: AuthIconType.secondary),
-                      )),
+                        await FirebaseAuth.instance
+                            .signInWithCredential(credential);
+                        Navigator.pushNamed(context, 'home');
+                      },
+                      style: const AuthButtonStyle(
+                          iconType: AuthIconType.secondary),
+                    ),
+                  ),
+                  Text(msg),
                   Padding(
                     padding: EdgeInsets.only(
                         top: MediaQuery.of(context).size.height * 0.16),
@@ -155,7 +156,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          'Don\’t have an account ?',
+                          'Don’t have an account ?',
                           textAlign: TextAlign.center,
                           style: TextStyle(color: Colors.black),
                         ),
@@ -177,21 +178,24 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: Colors.white,
                     text: 'Sign in',
                     onpress: () async {
+                      print(email + " " + password);
                       try {
                         setState(() {
                           showSpinner = true;
                         });
-                        final existingUser =
-                            await _auth.signInWithEmailAndPassword(
-                                email: email, password: password);
-                        if (existingUser != null) {
-                          Navigator.pushNamed(context, 'home');
-                        }
+
+                        await _auth.signInWithEmailAndPassword(
+                            email: email, password: password);
+                        Navigator.pushNamed(context, 'home');
                         setState(() {
                           showSpinner = false;
                         });
                       } catch (e) {
-                        // print(e);
+                        setState(() {
+                          msg = e.toString();
+                        });
+                        ;
+                        print(e);
                       }
                     },
                   )
