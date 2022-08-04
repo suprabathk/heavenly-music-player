@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "80696327892",
+    "firebase_url": "https://heavenly-sound-player-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "heavenly-sound-player",
     "storage_bucket": "heavenly-sound-player.appspot.com"
   },
@@ -13,6 +14,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "80696327892-7ec1cfj1cs1jb7bidsotuprootbborjb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.suprabath.heavenly.heavenly",
+            "certificate_hash": "0a7a1bbaf56022abf14b27b203bed93af19a576b"
+          }
+        },
         {
           "client_id": "80696327892-jb8vgp2kkkac8qamii5o1e2527vbc8n5.apps.googleusercontent.com",
           "client_type": 3
@@ -29,6 +38,13 @@
             {
               "client_id": "80696327892-jb8vgp2kkkac8qamii5o1e2527vbc8n5.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "80696327892-7nc3tp91qd29fium63qri0gcvm514oi5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.suprabath.heavenly.heavenly"
+              }
             }
           ]
         }

@@ -1,7 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class PageHeader extends StatelessWidget {
+late User loggedIn;
+final _auth = FirebaseAuth.instance;
+
+class PageHeader extends StatefulWidget {
   const PageHeader(
       {Key? key,
       required this.title,
@@ -14,11 +18,33 @@ class PageHeader extends StatelessWidget {
   final bool requireUserDetails;
 
   @override
+  State<PageHeader> createState() => _PageHeaderState();
+}
+
+class _PageHeaderState extends State<PageHeader> {
+  @override
+  void initState() {
+    getCurrentUser();
+    super.initState();
+  }
+
+  void getCurrentUser() {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        loggedIn = user;
+      }
+    } catch (e) {
+      // const Text('Error occured, reload the app!');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (requireUserDetails)
+        if (widget.requireUserDetails)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,32 +57,36 @@ class PageHeader extends StatelessWidget {
                     color: Colors.teal.shade700,
                     size: 20,
                   ),
-                  Text(
-                    'User name',
-                    style: GoogleFonts.josefinSans(
-                      textStyle: TextStyle(
-                          color: Colors.teal.shade700,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      loggedIn.displayName ?? loggedIn.email!,
+                      style: GoogleFonts.josefinSans(
+                        textStyle: TextStyle(
+                            color: Colors.teal.shade700,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ),
                 ],
               ),
-              const CircleAvatar(
-                backgroundImage: AssetImage('assets/clonex.png'),
+              CircleAvatar(
+                backgroundImage: NetworkImage(loggedIn.photoURL ??
+                    "https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg?w=826&t=st=1659595648~exp=1659596248~hmac=fb9c6aa3fc01d50840555a50d31a1b099a8469c24b0c01eb1326d1ff8503b8a8"),
                 backgroundColor: Colors.black12,
               ),
             ],
           ),
         Text(
-          title,
+          widget.title,
           style: GoogleFonts.montserrat(
             textStyle:
                 const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
         ),
         const SizedBox(height: 20),
-        if (requireSearchBar)
+        if (widget.requireSearchBar)
           Row(
             children: [
               Expanded(
