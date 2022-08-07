@@ -1,7 +1,7 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:glassmorphism/glassmorphism.dart';
+import 'package:glassmorphism_widgets/glassmorphism_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavenly/miscellaneous/loading_image.dart';
 
@@ -55,112 +55,43 @@ class _SoundPlayerState extends State<SoundPlayer> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: GlassmorphicContainer(
-                        margin: const EdgeInsets.all(20),
-                        blur: 20,
-                        height: 50,
-                        width: 50,
-                        border: 2,
-                        borderRadius: 20,
-                        borderGradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFFffffff).withOpacity(0.5),
-                            const Color(0xFFFFFFFF).withOpacity(0.5),
-                          ],
-                        ),
-                        linearGradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            const Color(0xFFffffff).withOpacity(0.1),
-                            const Color(0xFFFFFFFF).withOpacity(0.05),
-                          ],
-                          stops: const [
-                            0.1,
-                            1,
-                          ],
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            color: Colors.white,
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                        child: const GlassContainer(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white,
+                              size: 30,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    GlassmorphicContainer(
-                      margin: const EdgeInsets.all(20),
-                      blur: 20,
-                      height: 50,
-                      width: 50,
-                      border: 2,
-                      borderRadius: 20,
-                      borderGradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          const Color(0xFFffffff).withOpacity(0.5),
-                          const Color(0xFFFFFFFF).withOpacity(0.5),
-                        ],
-                      ),
-                      linearGradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          const Color(0xFFffffff).withOpacity(0.1),
-                          const Color(0xFFFFFFFF).withOpacity(0.05),
-                        ],
-                        stops: const [
-                          0.1,
-                          1,
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.bookmark_border_rounded,
-                          color: Colors.white,
+                      const GlassContainer(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.bookmark_border_rounded,
+                            color: Colors.white,
+                            size: 30,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                GlassmorphicContainer(
+                GlassContainer(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height / 2.1,
                   margin:
                       const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
-                  borderRadius: 20,
-                  blur: 20,
-                  border: 2,
-                  linearGradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      const Color(0xFFffffff).withOpacity(0.1),
-                      const Color(0xFFFFFFFF).withOpacity(0.05),
-                    ],
-                    stops: const [
-                      0.1,
-                      1,
-                    ],
-                  ),
-                  borderGradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      const Color(0xFFffffff).withOpacity(0.5),
-                      const Color(0xFFFFFFFF).withOpacity(0.5),
-                    ],
-                  ),
                   child: SoundPlayerControls(
                     title: widget.title,
                     fileName: widget.fileName,

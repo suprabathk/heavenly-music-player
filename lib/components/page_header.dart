@@ -35,7 +35,7 @@ class _PageHeaderState extends State<PageHeader> {
         loggedIn = user;
       }
     } catch (e) {
-      // const Text('Error occured, reload the app!');
+      // const Text('Error occurred, reload the app!');
     }
   }
 
