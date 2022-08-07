@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' as cf;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:glassmorphism_widgets/glassmorphism_widgets.dart';
@@ -6,18 +7,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:heavenly/miscellaneous/loading_image.dart';
 
 final storageRef = FirebaseStorage.instance.ref();
+final firestore = cf.FirebaseFirestore.instance;
 
 class SoundPlayer extends StatefulWidget {
-  const SoundPlayer(
-      {Key? key,
-      required this.title,
-      required this.image,
-      required this.fileName})
-      : super(key: key);
+  const SoundPlayer({
+    Key? key,
+    required this.soundID,
+  }) : super(key: key);
 
-  final String title;
-  final String image;
-  final String fileName;
+  final String soundID;
 
   @override
   State<SoundPlayer> createState() => _SoundPlayerState();
@@ -26,13 +24,32 @@ class SoundPlayer extends StatefulWidget {
 class _SoundPlayerState extends State<SoundPlayer> {
   String imageURL = loadingImage;
 
-  @override
-  void initState() {
-    storageRef.child(widget.image).getDownloadURL().then((value) {
+  String imageFile = 'loading';
+  String soundTitle = 'loading';
+  String soundFile = 'loading';
+
+  Future<void> getSoundData() async {
+    await firestore
+        .collection('Sounds')
+        .doc(widget.soundID)
+        .get()
+        .then((value) {
+      setState(() {
+        imageFile = value.data()!['image'];
+        soundTitle = value.data()!['title'];
+        soundFile = value.data()!['file_name'];
+      });
+    });
+    await storageRef.child('Images/$imageFile').getDownloadURL().then((value) {
       setState(() {
         imageURL = value;
       });
     });
+  }
+
+  @override
+  void initState() {
+    getSoundData();
     super.initState();
   }
 
@@ -93,8 +110,8 @@ class _SoundPlayerState extends State<SoundPlayer> {
                   margin:
                       const EdgeInsets.symmetric(vertical: 30, horizontal: 15),
                   child: SoundPlayerControls(
-                    title: widget.title,
-                    fileName: widget.fileName,
+                    title: soundTitle,
+                    fileName: 'Music/$soundFile',
                   ),
                 ),
               ],
@@ -127,6 +144,7 @@ class _SoundPlayerControlsState extends State<SoundPlayerControls> {
   @override
   void initState() {
     super.initState();
+    print(widget.fileName);
     player = AudioPlayer();
     storageRef.child(widget.fileName).getDownloadURL().then((value) {
       player.setSource(UrlSource(value));
@@ -172,29 +190,33 @@ class _SoundPlayerControlsState extends State<SoundPlayerControls> {
                   fontWeight: FontWeight.bold),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.fast_rewind_rounded,
-                color: Colors.white,
-                size: 80,
-              ),
-              GestureDetector(
-                onTap: playToggle,
-                child: Icon(
-                  isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
-                  color: Colors.white,
-                  size: 120,
-                ),
-              ),
-              const Icon(
-                Icons.fast_forward_rounded,
-                color: Colors.white,
-                size: 80,
-              ),
-            ],
-          ),
+          widget.fileName == 'loading'
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.fast_rewind_rounded,
+                      color: Colors.white,
+                      size: 80,
+                    ),
+                    GestureDetector(
+                      onTap: playToggle,
+                      child: Icon(
+                        isPlaying
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
+                        color: Colors.white,
+                        size: 120,
+                      ),
+                    ),
+                    const Icon(
+                      Icons.fast_forward_rounded,
+                      color: Colors.white,
+                      size: 80,
+                    ),
+                  ],
+                )
+              : Container(),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

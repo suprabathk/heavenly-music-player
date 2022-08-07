@@ -8,8 +8,8 @@ import 'package:heavenly/miscellaneous/loading_image.dart';
 final storageRef = FirebaseStorage.instance.ref();
 final firestore = FirebaseFirestore.instance;
 
-class DisplayCard extends StatefulWidget {
-  const DisplayCard({
+class SavedCard extends StatefulWidget {
+  const SavedCard({
     Key? key,
     required this.soundID,
   }) : super(key: key);
@@ -17,10 +17,10 @@ class DisplayCard extends StatefulWidget {
   final String soundID;
 
   @override
-  State<DisplayCard> createState() => _DisplayCardState();
+  State<SavedCard> createState() => _SavedCardState();
 }
 
-class _DisplayCardState extends State<DisplayCard> {
+class _SavedCardState extends State<SavedCard> {
   String imageURL = loadingImage;
   String imageFile = '';
   String soundTitle = '';
@@ -56,14 +56,14 @@ class _DisplayCardState extends State<DisplayCard> {
     return CachedNetworkImage(
       imageUrl: imageURL,
       imageBuilder: (context, imageProvider) => Container(
-        width: 130,
+        height: 20,
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         decoration: BoxDecoration(
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(30),
           image: DecorationImage(
             image: imageProvider,
-            fit: BoxFit.fill,
+            fit: BoxFit.fitWidth,
           ),
         ),
         child: Column(

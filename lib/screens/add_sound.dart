@@ -16,11 +16,15 @@ class _AddSoundState extends State<AddSound> {
   List<String> categoryNamesList = [];
 
   void pushData(int index) {
-    firestore.collection('$index').add({
+    firestore.collection('Sounds').add({
       'title': selectedName,
       'description': selectedDescription,
-      'image': selectedImage,
-      'file_name': selectedSound,
+      'image': '${categoryNamesList.elementAt(index)}/$selectedImage',
+      'file_name': '${categoryNamesList.elementAt(index)}/$selectedSound',
+    }).then((doc) {
+      firestore
+          .collection(categoryNamesList.elementAt(index))
+          .add({'sound': doc.id});
     });
   }
 

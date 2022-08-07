@@ -33,7 +33,9 @@ class _DiscoverPageState extends State<DiscoverPage>
 
   dynamic listViewChildren(int collectionIndex) {
     return StreamBuilder<QuerySnapshot>(
-      stream: firestore.collection('$collectionIndex').snapshots(),
+      stream: firestore
+          .collection(categoryNamesList.elementAt(collectionIndex))
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final sounds = snapshot.data?.docs;
@@ -46,21 +48,13 @@ class _DiscoverPageState extends State<DiscoverPage>
                     context,
                     MaterialPageRoute(
                       builder: (context) => SoundPlayer(
-                        title: sound.get('title'),
-                        image:
-                            'Images/${categoryNamesList.elementAt(collectionIndex)}/${sound.get('image')}',
-                        // change hardcoded index to collectionIndex after populating database
-                        fileName:
-                            'Music/${categoryNamesList.elementAt(collectionIndex)}/${sound.get('file_name')}',
+                        soundID: sound.get('sound'),
                       ),
                     ),
                   );
                 },
                 child: DisplayCard(
-                  cardImage:
-                      'Images/${categoryNamesList.elementAt(collectionIndex)}/${sound.get('image')}',
-                  cardTitle: sound.get('title'),
-                  cardSubTitle: sound.get('description'),
+                  soundID: sound.get('sound'),
                 ),
               ),
             );
