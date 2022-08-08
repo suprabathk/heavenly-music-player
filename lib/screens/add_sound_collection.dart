@@ -5,20 +5,21 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavenly/components/page_header.dart';
+import 'package:heavenly/components/private_collection.dart';
+import 'package:heavenly/screens/pages/saved_page.dart';
 import 'package:lottie/lottie.dart';
 
 final firestore = FirebaseFirestore.instance;
 final storageRef = FirebaseStorage.instance.ref();
 
-class AddSound extends StatefulWidget {
-  const AddSound({Key? key}) : super(key: key);
+class AddSoundCollection extends StatefulWidget {
+  const AddSoundCollection({Key? key}) : super(key: key);
 
   @override
-  State<AddSound> createState() => _AddSoundState();
+  State<AddSoundCollection> createState() => _AddSoundCollectionState();
 }
 
-class _AddSoundState extends State<AddSound> {
-  List<String> categoryNamesList = [];
+class _AddSoundCollectionState extends State<AddSoundCollection> {
   late PlatformFile imageFile;
   late PlatformFile soundFile;
   late UploadTask uploadTask;
@@ -55,43 +56,25 @@ class _AddSoundState extends State<AddSound> {
     }
   }
 
-  void pushData(int index) {
+  void pushData() {
     firestore.collection('Sounds').add({
       'title': selectedName,
       'description': selectedDescription,
-      'image': '${categoryNamesList.elementAt(index)}/${imageFile.name}',
-      'file_name': '${categoryNamesList.elementAt(index)}/${soundFile.name}',
+      'image': '${loggedIn.uid}/${imageFile.name}',
+      'file_name': '${loggedIn.uid}/${soundFile.name}',
     }).then((doc) {
-      firestore
-          .collection(categoryNamesList.elementAt(index))
-          .add({'sound': doc.id});
+      privateCollection.add(doc.id);
+      firestore.collection('saved').doc(loggedIn.uid).set({
+        'private_collection': privateCollection,
+        'saved_sounds': savedUserSounds
+      });
     });
   }
 
-  void getTabData() async {
-    return await firestore
-        .collection('category_names')
-        .get()
-        .then((QuerySnapshot? querySnapshot) {
-      for (var doc in querySnapshot!.docs) {
-        setState(() {
-          categoryNamesList = List<String>.from(doc['category_names']);
-        });
-      }
-    });
-  }
-
-  String selectedCategory = '';
   String selectedName = '';
   String selectedDescription = '';
   String selectedImageName = '';
   String selectedSoundName = '';
-
-  @override
-  void initState() {
-    getTabData();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,12 +89,12 @@ class _AddSoundState extends State<AddSound> {
                   SizedBox(width: MediaQuery.of(context).size.width),
                   const Center(
                     child: PageHeader(
-                      title: 'Add sound to global collection',
+                      title: 'Add to your collection',
                       requireUserDetails: false,
                     ),
                   ),
                   Text(
-                    'Sounds added to global collection can be viewed and played by everyone',
+                    'Sounds added to your collection can be viewed and played only by you',
                     style: GoogleFonts.montserrat(
                       textStyle: const TextStyle(
                         fontWeight: FontWeight.w500,
@@ -120,43 +103,6 @@ class _AddSoundState extends State<AddSound> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Select category',
-                        style: GoogleFonts.montserrat(
-                          textStyle: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                      DropdownButton(
-                        style: GoogleFonts.lato(
-                            textStyle: const TextStyle(
-                                color: Colors.black, fontSize: 20)),
-                        borderRadius: BorderRadius.circular(15),
-                        underline: Container(),
-                        value: selectedCategory.isNotEmpty
-                            ? selectedCategory
-                            : null,
-                        items: List.generate(
-                          categoryNamesList.length,
-                          (index) => DropdownMenuItem(
-                            value: categoryNamesList.elementAt(index),
-                            child: Text(categoryNamesList.elementAt(index)),
-                          ),
-                        ),
-                        onChanged: (String? cat) {
-                          setState(() {
-                            selectedCategory = cat!;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
                   Text(
                     'Sound name',
                     style: GoogleFonts.montserrat(
@@ -267,11 +213,11 @@ class _AddSoundState extends State<AddSound> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.teal,
         onPressed: () async {
-          pushData(categoryNamesList.indexOf(selectedCategory));
+          pushData();
           await uploadFile(
-              'Images/$selectedCategory/${imageFile.name}', imageFile);
+              'Images/${loggedIn.uid}/${imageFile.name}', imageFile);
           await uploadFile(
-              'Music/$selectedCategory/${soundFile.name}', soundFile);
+              'Music/${loggedIn.uid}/${soundFile.name}', soundFile);
           // ignore: use_build_context_synchronously
           Navigator.pop(context);
         },

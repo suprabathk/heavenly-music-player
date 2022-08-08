@@ -5,6 +5,8 @@ import 'package:heavenly/components/display_card.dart';
 import 'package:heavenly/components/page_header.dart';
 import 'package:heavenly/screens/sound_player.dart';
 
+import '../../components/private_collection.dart';
+
 final firestore = FirebaseFirestore.instance;
 
 class DiscoverPage extends StatefulWidget {
@@ -119,6 +121,7 @@ class _DiscoverPageState extends State<DiscoverPage>
             ),
           ),
         ),
+        const Expanded(child: PrivateCollection(showDel: false)),
       ],
     );
   }

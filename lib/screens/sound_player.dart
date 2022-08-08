@@ -9,6 +9,8 @@ import 'package:heavenly/miscellaneous/loading_image.dart';
 import 'package:heavenly/screens/pages/saved_page.dart';
 import 'package:lottie/lottie.dart';
 
+import '../components/private_collection.dart';
+
 final storageRef = FirebaseStorage.instance.ref();
 final firestore = cf.FirebaseFirestore.instance;
 
@@ -57,13 +59,20 @@ class _SoundPlayerState extends State<SoundPlayer> {
     super.initState();
   }
 
-  void showToast(BuildContext context, String message) {
+  void _showToast(BuildContext context, String message) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        content: Text(message),
+        backgroundColor: Colors.white,
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.teal),
+        ),
         action: SnackBarAction(
-            label: 'Hide', onPressed: scaffold.hideCurrentSnackBar),
+          label: 'Hide',
+          onPressed: scaffold.hideCurrentSnackBar,
+          textColor: Colors.black,
+        ),
       ),
     );
   }
@@ -114,10 +123,13 @@ class _SoundPlayerState extends State<SoundPlayer> {
                             firestore
                                 .collection('saved')
                                 .doc(loggedIn.uid)
-                                .set({'saved_sounds': savedUserSounds});
-                            showToast(context, 'Added to collection');
+                                .set({
+                              'saved_sounds': savedUserSounds,
+                              'private_collection': privateCollection,
+                            });
+                            _showToast(context, 'Added to saved');
                           } else {
-                            showToast(context, 'Already in collection');
+                            _showToast(context, 'Already in saved');
                           }
                         },
                         child: const GlassContainer(

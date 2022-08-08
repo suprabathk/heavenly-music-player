@@ -5,27 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:glassmorphism_widgets/glassmorphism_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavenly/components/private_collection.dart';
+import 'package:heavenly/screens/pages/saved_page.dart';
 import '../../components/page_header.dart';
-import '../screens/pages/saved_page.dart';
 
 final storageRef = FirebaseStorage.instance.ref();
 final firestore = FirebaseFirestore.instance;
 
-class SavedCard extends StatefulWidget {
-  const SavedCard({
+class PrivateCard extends StatefulWidget {
+  const PrivateCard({
     Key? key,
     required this.soundID,
+    required this.showDel,
   }) : super(key: key);
 
   final String soundID;
+  final bool showDel;
 
   @override
-  State<SavedCard> createState() => _SavedCardState();
+  State<PrivateCard> createState() => _PrivateCardState();
 }
 
-class _SavedCardState extends State<SavedCard> {
+class _PrivateCardState extends State<PrivateCard> {
   String imageURL = '';
   String imageFile = '';
+  String soundFile = '';
   String soundTitle = '';
   String soundDescription = '';
 
@@ -36,6 +39,7 @@ class _SavedCardState extends State<SavedCard> {
         .get()
         .then((value) {
       imageFile = value.data()!['image'];
+      soundFile = value.data()!['file_name'];
       soundTitle = value.data()!['title'];
       soundDescription = value.data()!['description'];
     });
@@ -107,29 +111,53 @@ class _SavedCardState extends State<SavedCard> {
                       ),
                     ],
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      _showToast(context, 'Removed from saved');
-                      if (savedUserSounds.contains(widget.soundID)) {
-                        savedUserSounds.remove(widget.soundID);
-                        firestore.collection('saved').doc(loggedIn.uid).set({
-                          'saved_sounds': savedUserSounds,
-                          'private_collection': privateCollection,
-                        });
-                        getSoundData();
-                      }
-                    },
-                    child: const GlassContainer(
-                      child: Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.bookmark_rounded,
-                          color: Colors.white,
-                          size: 30,
+                  widget.showDel
+                      ? GestureDetector(
+                          onTap: () {
+                            _showToast(context,
+                                'Long press to delete from collection');
+                          },
+                          onLongPress: () {
+                            _showToast(context, 'Removed from collection');
+                            if (privateCollection.contains(widget.soundID)) {
+                              privateCollection.remove(widget.soundID);
+                              firestore
+                                  .collection('saved')
+                                  .doc(loggedIn.uid)
+                                  .set({
+                                'private_collection': privateCollection,
+                                'saved_sounds': savedUserSounds
+                              });
+                              firestore
+                                  .collection('Sounds')
+                                  .doc(widget.soundID)
+                                  .delete();
+                              storageRef.child('Images/$imageFile').delete();
+                              storageRef.child('Music/$soundFile').delete();
+                              getSoundData();
+                            }
+                          },
+                          child: const GlassContainer(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.delete_forever_rounded,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                        )
+                      : const GlassContainer(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.play_arrow_rounded,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

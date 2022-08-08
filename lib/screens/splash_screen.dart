@@ -60,7 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ),
           Text(
-            'Find your inner-peace',
+            'Find your vibe',
             style: GoogleFonts.josefinSans(
                 textStyle: const TextStyle(fontSize: 20)),
           ),
