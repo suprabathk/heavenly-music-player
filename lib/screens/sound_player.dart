@@ -4,7 +4,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:glassmorphism_widgets/glassmorphism_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:heavenly/components/page_header.dart';
 import 'package:heavenly/miscellaneous/loading_image.dart';
+import 'package:heavenly/screens/pages/saved_page.dart';
 import 'package:lottie/lottie.dart';
 
 final storageRef = FirebaseStorage.instance.ref();
@@ -55,6 +57,17 @@ class _SoundPlayerState extends State<SoundPlayer> {
     super.initState();
   }
 
+  void _showToast(BuildContext context) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content: const Text('Added to saved'),
+        action: SnackBarAction(
+            label: 'Hide', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,13 +107,25 @@ class _SoundPlayerState extends State<SoundPlayer> {
                           ),
                         ),
                       ),
-                      const GlassContainer(
-                        child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.bookmark_border_rounded,
-                            color: Colors.white,
-                            size: 30,
+                      GestureDetector(
+                        onTap: () {
+                          _showToast(context);
+                          if (!savedUserSounds.contains(widget.soundID)) {
+                            savedUserSounds.add(widget.soundID);
+                            firestore
+                                .collection('saved')
+                                .doc(loggedIn.uid)
+                                .set({'saved_sounds': savedUserSounds});
+                          }
+                        },
+                        child: const GlassContainer(
+                          child: Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.bookmark_border_rounded,
+                              color: Colors.white,
+                              size: 30,
+                            ),
                           ),
                         ),
                       ),
