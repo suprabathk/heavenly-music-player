@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:glassmorphism_widgets/glassmorphism_widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavenly/miscellaneous/loading_image.dart';
+import 'package:lottie/lottie.dart';
 
 final storageRef = FirebaseStorage.instance.ref();
 final firestore = cf.FirebaseFirestore.instance;
@@ -45,6 +46,7 @@ class _SoundPlayerState extends State<SoundPlayer> {
         imageURL = value;
       });
     });
+    return;
   }
 
   @override
@@ -138,17 +140,13 @@ class _SoundPlayerControlsState extends State<SoundPlayerControls> {
   late AudioPlayer player;
   Duration duration = const Duration();
   Duration position = const Duration();
-  late Source fileSource;
+  bool fileSource = false;
   bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    print(widget.fileName);
     player = AudioPlayer();
-    storageRef.child(widget.fileName).getDownloadURL().then((value) {
-      player.setSource(UrlSource(value));
-    });
 
     //automatically set duration
     player.onDurationChanged.listen((Duration d) {
@@ -164,6 +162,14 @@ class _SoundPlayerControlsState extends State<SoundPlayerControls> {
   void dispose() {
     player.dispose();
     super.dispose();
+  }
+
+  Future<void> getPlayer() async {
+    await storageRef.child(widget.fileName).getDownloadURL().then((value) {
+      fileSource = true;
+      player.setSource(UrlSource(value));
+    });
+    return;
   }
 
   void playToggle() async {
@@ -190,59 +196,75 @@ class _SoundPlayerControlsState extends State<SoundPlayerControls> {
                   fontWeight: FontWeight.bold),
             ),
           ),
-          widget.fileName == 'loading'
-              ? Row(
+          FutureBuilder(
+            future: getPlayer(),
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (duration.inSeconds != 0) {
+                return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(
-                      Icons.fast_rewind_rounded,
-                      color: Colors.white,
-                      size: 80,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.fast_rewind_rounded,
+                          color: Colors.white,
+                          size: 80,
+                        ),
+                        GestureDetector(
+                          onTap: playToggle,
+                          child: Icon(
+                            isPlaying
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            color: Colors.white,
+                            size: 120,
+                          ),
+                        ),
+                        const Icon(
+                          Icons.fast_forward_rounded,
+                          color: Colors.white,
+                          size: 80,
+                        ),
+                      ],
                     ),
-                    GestureDetector(
-                      onTap: playToggle,
-                      child: Icon(
-                        isPlaying
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
-                        color: Colors.white,
-                        size: 120,
-                      ),
-                    ),
-                    const Icon(
-                      Icons.fast_forward_rounded,
-                      color: Colors.white,
-                      size: 80,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${position.inSeconds.toDouble()}',
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 15),
+                        ),
+                        Slider(
+                          thumbColor: Colors.white,
+                          activeColor: Colors.teal,
+                          inactiveColor: Colors.white12,
+                          value: position.inSeconds.toDouble(),
+                          max: duration.inSeconds.toDouble(),
+                          onChangeEnd: (double value) {
+                            setState(() {
+                              Duration d = Duration(seconds: value.toInt());
+                              player.seek(d);
+                              position = d;
+                            });
+                          },
+                          onChanged: (double value) {},
+                        ),
+                        Text(
+                          '${duration.inSeconds}',
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 15),
+                        ),
+                      ],
                     ),
                   ],
-                )
-              : Container(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                '${position.inSeconds.toDouble()}',
-                style: const TextStyle(color: Colors.white, fontSize: 15),
-              ),
-              Slider(
-                thumbColor: Colors.white,
-                activeColor: Colors.teal,
-                inactiveColor: Colors.white12,
-                value: position.inSeconds.toDouble(),
-                max: duration.inSeconds.toDouble(),
-                onChanged: (double value) {
-                  setState(() {
-                    Duration d = Duration(seconds: value.toInt());
-                    player.seek(d);
-                    position = d;
-                  });
-                },
-              ),
-              Text(
-                '${duration.inSeconds}',
-                style: const TextStyle(color: Colors.white, fontSize: 15),
-              ),
-            ],
+                );
+              } else {
+                return Lottie.asset('assets/animations/loading.json');
+              }
+            },
           ),
         ],
       ),

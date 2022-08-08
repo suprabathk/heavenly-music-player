@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:heavenly/miscellaneous/loading_image.dart';
 
 final storageRef = FirebaseStorage.instance.ref();
 final firestore = FirebaseFirestore.instance;
@@ -21,7 +20,7 @@ class DisplayCard extends StatefulWidget {
 }
 
 class _DisplayCardState extends State<DisplayCard> {
-  String imageURL = loadingImage;
+  String imageURL = '';
   String imageFile = '';
   String soundTitle = '';
   String soundDescription = '';
@@ -32,66 +31,78 @@ class _DisplayCardState extends State<DisplayCard> {
         .doc(widget.soundID)
         .get()
         .then((value) {
-      setState(() {
-        imageFile = value.data()!['image'];
-        soundTitle = value.data()!['title'];
-        soundDescription = value.data()!['description'];
-      });
+      imageFile = value.data()!['image'];
+      soundTitle = value.data()!['title'];
+      soundDescription = value.data()!['description'];
     });
     await storageRef.child('Images/$imageFile').getDownloadURL().then((value) {
-      setState(() {
-        imageURL = value;
-      });
+      imageURL = value;
     });
-  }
-
-  @override
-  void initState() {
-    getSoundData();
-    super.initState();
+    setState(() {});
+    return;
   }
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      imageUrl: imageURL,
-      imageBuilder: (context, imageProvider) => Container(
-        width: 130,
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(30),
-          image: DecorationImage(
-            image: imageProvider,
-            fit: BoxFit.fill,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              soundTitle,
-              style: GoogleFonts.montserrat(
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w700,
+    return FutureBuilder(
+      future: getSoundData(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (imageURL != '') {
+          return CachedNetworkImage(
+            imageUrl: imageURL,
+            imageBuilder: (context, imageProvider) => Container(
+              width: 130,
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(30),
+                image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.fill,
                 ),
               ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    soundTitle,
+                    style: GoogleFonts.montserrat(
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    soundDescription,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
             ),
-            Text(
-              soundDescription,
-              style: const TextStyle(color: Colors.white),
+            placeholder: (context, url) => Container(
+              width: 130,
+              padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 80),
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(30),
+              ),
             ),
-          ],
-        ),
-      ),
-      placeholder: (context, url) => const Center(
-        child:
-            SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-      ),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          );
+        } else {
+          return Container(
+            width: 130,
+            padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 80),
+            decoration: BoxDecoration(
+              color: Colors.black12,
+              borderRadius: BorderRadius.circular(30),
+            ),
+          );
+        }
+      },
     );
   }
 }
