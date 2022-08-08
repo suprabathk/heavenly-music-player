@@ -57,11 +57,11 @@ class _SoundPlayerState extends State<SoundPlayer> {
     super.initState();
   }
 
-  void _showToast(BuildContext context) {
+  void showToast(BuildContext context, String message) {
     final scaffold = ScaffoldMessenger.of(context);
     scaffold.showSnackBar(
       SnackBar(
-        content: const Text('Added to saved'),
+        content: Text(message),
         action: SnackBarAction(
             label: 'Hide', onPressed: scaffold.hideCurrentSnackBar),
       ),
@@ -109,13 +109,15 @@ class _SoundPlayerState extends State<SoundPlayer> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          _showToast(context);
                           if (!savedUserSounds.contains(widget.soundID)) {
                             savedUserSounds.add(widget.soundID);
                             firestore
                                 .collection('saved')
                                 .doc(loggedIn.uid)
                                 .set({'saved_sounds': savedUserSounds});
+                            showToast(context, 'Added to collection');
+                          } else {
+                            showToast(context, 'Already in collection');
                           }
                         },
                         child: const GlassContainer(

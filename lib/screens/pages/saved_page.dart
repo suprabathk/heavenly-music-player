@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:heavenly/components/saved_card.dart';
 import '../../components/page_header.dart';
+import '../sound_player.dart';
 
 final firestore = FirebaseFirestore.instance;
 List savedUserSounds = [];
@@ -14,13 +15,6 @@ class SavedPage extends StatefulWidget {
 }
 
 class _SavedPageState extends State<SavedPage> {
-  Future<void> getSavedSounds() async {
-    await firestore.collection('saved').doc(loggedIn.uid).get().then((value) {
-      savedUserSounds = value.get('saved_sounds');
-    });
-    return;
-  }
-
   @override
   void initState() {
     super.initState();
@@ -36,15 +30,28 @@ class _SavedPageState extends State<SavedPage> {
           requireUserDetails: true,
         ),
         const SizedBox(height: 10),
-        FutureBuilder(
-          future: getSavedSounds(),
+        StreamBuilder(
+          stream: firestore.collection('saved').doc(loggedIn.uid).snapshots(),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             return Expanded(
               child: ListView(
                 children: List.generate(savedUserSounds.length, (index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SavedCard(soundID: savedUserSounds.elementAt(index)),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SoundPlayer(
+                              soundID: savedUserSounds.elementAt(index),
+                            ),
+                          ),
+                        );
+                      },
+                      child:
+                          SavedCard(soundID: savedUserSounds.elementAt(index)),
+                    ),
                   );
                 }),
               ),
