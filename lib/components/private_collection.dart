@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:heavenly/components/private_card.dart';
 import '../../components/page_header.dart';
+import '../screens/add_sound_collection.dart';
 import '../screens/sound_player.dart';
 
 final firestore = FirebaseFirestore.instance;
@@ -46,35 +47,63 @@ class _PrivateCollectionState extends State<PrivateCollection> {
           ),
         ),
         const SizedBox(height: 10),
-        StreamBuilder(
-          stream: firestore.collection('saved').doc(loggedIn.uid).snapshots(),
-          builder: (context, snapshot) {
-            return Expanded(
-              child: ListView(
-                children: List.generate(privateCollection.length, (index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SoundPlayer(
-                              soundID: privateCollection.elementAt(index),
-                            ),
+        privateCollection.isNotEmpty
+            ? StreamBuilder(
+                stream:
+                    firestore.collection('saved').doc(loggedIn.uid).snapshots(),
+                builder: (context, snapshot) {
+                  return Expanded(
+                    child: ListView(
+                      children:
+                          List.generate(privateCollection.length, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SoundPlayer(
+                                    soundID: privateCollection.elementAt(index),
+                                  ),
+                                ),
+                              );
+                            },
+                            child: PrivateCard(
+                                soundID: privateCollection.elementAt(index),
+                                showDel: widget.showDel),
                           ),
                         );
-                      },
-                      child: PrivateCard(
-                          soundID: privateCollection.elementAt(index),
-                          showDel: widget.showDel),
+                      }),
                     ),
                   );
-                }),
+                },
+              )
+            : Column(
+                children: [
+                  Text(
+                    'Add sounds to your private collection\n\nSounds added to your collection can be viewed and played only by you',
+                    style: GoogleFonts.lato(
+                        textStyle: const TextStyle(color: Colors.black38)),
+                  ),
+                  const SizedBox(height: 30),
+                  !widget.showDel
+                      ? FloatingActionButton.extended(
+                          heroTag: 'notToCauseError',
+                          backgroundColor: Colors.teal,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AddSoundCollection()));
+                          },
+                          label: const Text('Add to your collection'),
+                          icon: const Icon(Icons.add),
+                        )
+                      : Container(),
+                ],
               ),
-            );
-          },
-        ),
       ],
     );
   }

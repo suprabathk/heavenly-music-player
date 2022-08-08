@@ -91,38 +91,40 @@ class _DiscoverPageState extends State<DiscoverPage>
   Widget build(BuildContext context) {
     TabController tabController =
         TabController(length: categoryNamesList.length, vsync: this);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const PageHeader(
-          title: 'Discover\nNew sounds',
-          requireSearchBar: true,
-          requireUserDetails: true,
-        ),
-        TabBar(
-          controller: tabController,
-          isScrollable: true,
-          splashFactory: NoSplash.splashFactory,
-          indicator: const DotIndicator(),
-          indicatorPadding: const EdgeInsets.all(10),
-          labelColor: Colors.teal.shade700,
-          unselectedLabelColor: Colors.black38,
-          tabs: List.generate(categoryNamesList.length,
-              (index) => Tab(text: categoryNamesList.elementAt(index))),
-        ),
-        SizedBox(
-          width: double.infinity,
-          height: MediaQuery.of(context).size.height / 3.5,
-          child: TabBarView(
+    return Scaffold(
+      body: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const PageHeader(
+            title: 'Discover\nNew sounds',
+            requireSearchBar: true,
+            requireUserDetails: true,
+          ),
+          TabBar(
             controller: tabController,
-            children: List.generate(
-              categoryNamesList.length,
-              (index) => listViewChildren(index),
+            isScrollable: true,
+            splashFactory: NoSplash.splashFactory,
+            indicator: const DotIndicator(),
+            indicatorPadding: const EdgeInsets.all(10),
+            labelColor: Colors.teal.shade700,
+            unselectedLabelColor: Colors.black38,
+            tabs: List.generate(categoryNamesList.length,
+                (index) => Tab(text: categoryNamesList.elementAt(index))),
+          ),
+          SizedBox(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height / 3.5,
+            child: TabBarView(
+              controller: tabController,
+              children: List.generate(
+                categoryNamesList.length,
+                (index) => listViewChildren(index),
+              ),
             ),
           ),
-        ),
-        const Expanded(child: PrivateCollection(showDel: false)),
-      ],
+          const Expanded(child: PrivateCollection(showDel: false)),
+        ],
+      ),
     );
   }
 }
