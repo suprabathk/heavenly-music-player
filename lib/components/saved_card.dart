@@ -116,7 +116,7 @@ class _SavedCardState extends State<SavedCard> {
                       child: Padding(
                         padding: EdgeInsets.all(8.0),
                         child: Icon(
-                          Icons.bookmark_border_rounded,
+                          Icons.bookmark_rounded,
                           color: Colors.white,
                           size: 30,
                         ),

@@ -56,13 +56,19 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           const SizedBox(height: 15),
-          Text(
-            'Sign out',
-            style: GoogleFonts.josefinSans(
-              textStyle: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w700),
+          GestureDetector(
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacementNamed(context, 'login_screen');
+            },
+            child: Text(
+              'Sign out',
+              style: GoogleFonts.josefinSans(
+                textStyle: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700),
+              ),
             ),
           ),
           const SizedBox(height: 10),

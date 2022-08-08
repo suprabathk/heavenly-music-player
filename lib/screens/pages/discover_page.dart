@@ -53,14 +53,17 @@ class _DiscoverPageState extends State<DiscoverPage>
                     ),
                   );
                 },
-                child: DisplayCard(
-                  soundID: sound.get('sound'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: DisplayCard(
+                    soundID: sound.get('sound'),
+                  ),
                 ),
               ),
             );
           }
           return ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             scrollDirection: Axis.horizontal,
             children: soundWidgets,
           );
