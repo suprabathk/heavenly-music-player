@@ -17,7 +17,15 @@ class SavedPage extends StatefulWidget {
 class _SavedPageState extends State<SavedPage> {
   @override
   void initState() {
+    getSavedSounds();
     super.initState();
+  }
+
+  Future<void> getSavedSounds() async {
+    await firestore.collection('saved').doc(loggedIn.uid).get().then((value) {
+      savedUserSounds = value.get('saved_sounds');
+    });
+    return;
   }
 
   @override
