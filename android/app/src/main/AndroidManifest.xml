@@ -2,7 +2,7 @@
     package="com.suprabath.heavenly.heavenly">
     <uses-permission android:name="android.permission.INTERNET"/>
    <application
-        android:label="heavenly"
+        android:label="Heavenly"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
