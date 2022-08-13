@@ -2,5 +2,5 @@
 
 Find your vibe
 
-Tune-in to peaceful nature sounds
-Upload your own collection which is private to you
+Tune-in to peaceful nature sounds 
+Upload your own collection which is private to you 
