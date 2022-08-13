@@ -1,4 +1,4 @@
-#Heavenly - Sound player
+# Heavenly - Sound player
 
 Find your vibe
 
