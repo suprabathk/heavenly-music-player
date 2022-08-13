@@ -246,10 +246,21 @@ class _SoundPlayerControlsState extends State<SoundPlayerControls> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
-                          Icons.fast_rewind_rounded,
-                          color: Colors.white,
-                          size: 80,
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              Duration d = position.inSeconds > 10
+                                  ? Duration(seconds: position.inSeconds - 10)
+                                  : const Duration(seconds: 0);
+                              player.seek(d);
+                              position = d;
+                            });
+                          },
+                          child: const Icon(
+                            Icons.fast_rewind_rounded,
+                            color: Colors.white,
+                            size: 80,
+                          ),
                         ),
                         GestureDetector(
                           onTap: playToggle,
@@ -261,10 +272,22 @@ class _SoundPlayerControlsState extends State<SoundPlayerControls> {
                             size: 120,
                           ),
                         ),
-                        const Icon(
-                          Icons.fast_forward_rounded,
-                          color: Colors.white,
-                          size: 80,
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              Duration d = position.inSeconds <
+                                      duration.inSeconds - 10
+                                  ? Duration(seconds: position.inSeconds + 10)
+                                  : Duration(seconds: duration.inSeconds);
+                              player.seek(d);
+                              position = d;
+                            });
+                          },
+                          child: const Icon(
+                            Icons.fast_forward_rounded,
+                            color: Colors.white,
+                            size: 80,
+                          ),
                         ),
                       ],
                     ),

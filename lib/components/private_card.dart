@@ -119,6 +119,9 @@ class _PrivateCardState extends State<PrivateCard> {
                           },
                           onLongPress: () {
                             _showToast(context, 'Removed from collection');
+                            if (savedUserSounds.contains(widget.soundID)) {
+                              savedUserSounds.remove(widget.soundID);
+                            }
                             if (privateCollection.contains(widget.soundID)) {
                               privateCollection.remove(widget.soundID);
                               firestore
