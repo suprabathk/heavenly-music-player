@@ -95,34 +95,46 @@ class _DiscoverPageState extends State<DiscoverPage>
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const PageHeader(
-            title: 'Discover\nNew sounds',
-            requireSearchBar: true,
-            requireUserDetails: true,
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: PageHeader(
+              title: 'Discover\nNew sounds',
+              requireSearchBar: true,
+              requireUserDetails: true,
+            ),
           ),
-          TabBar(
-            controller: tabController,
-            isScrollable: true,
-            splashFactory: NoSplash.splashFactory,
-            indicator: const DotIndicator(),
-            indicatorPadding: const EdgeInsets.all(10),
-            labelColor: Colors.teal.shade700,
-            unselectedLabelColor: Colors.black38,
-            tabs: List.generate(categoryNamesList.length,
-                (index) => Tab(text: categoryNamesList.elementAt(index))),
-          ),
-          SizedBox(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height / 3.5,
-            child: TabBarView(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: TabBar(
               controller: tabController,
-              children: List.generate(
-                categoryNamesList.length,
-                (index) => listViewChildren(index),
+              isScrollable: true,
+              splashFactory: NoSplash.splashFactory,
+              indicator: const DotIndicator(),
+              indicatorPadding: const EdgeInsets.all(10),
+              labelColor: Colors.teal.shade700,
+              unselectedLabelColor: Colors.black38,
+              tabs: List.generate(categoryNamesList.length,
+                  (index) => Tab(text: categoryNamesList.elementAt(index))),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 6),
+            child: SizedBox(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height / 3.5,
+              child: TabBarView(
+                controller: tabController,
+                children: List.generate(
+                  categoryNamesList.length,
+                  (index) => listViewChildren(index),
+                ),
               ),
             ),
           ),
-          const Expanded(child: PrivateCollection(showDel: false)),
+          const Padding(
+            padding: EdgeInsets.all(12),
+            child: Expanded(child: PrivateCollection(showDel: false)),
+          ),
         ],
       ),
     );

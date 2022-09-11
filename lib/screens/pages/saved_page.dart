@@ -32,43 +32,46 @@ class _SavedPageState extends State<SavedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const PageHeader(
-          title: 'Saved sounds',
-          requireSearchBar: true,
-          requireUserDetails: true,
-        ),
-        const SizedBox(height: 10),
-        StreamBuilder(
-          stream: firestore.collection('saved').doc(loggedIn.uid).snapshots(),
-          builder: (context, snapshot) {
-            return Expanded(
-              child: ListView(
-                children: List.generate(savedUserSounds.length, (index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SoundPlayer(
-                              soundID: savedUserSounds.elementAt(index),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        children: [
+          const PageHeader(
+            title: 'Saved sounds',
+            requireSearchBar: true,
+            requireUserDetails: true,
+          ),
+          const SizedBox(height: 10),
+          StreamBuilder(
+            stream: firestore.collection('saved').doc(loggedIn.uid).snapshots(),
+            builder: (context, snapshot) {
+              return Expanded(
+                child: ListView(
+                  children: List.generate(savedUserSounds.length, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SoundPlayer(
+                                soundID: savedUserSounds.elementAt(index),
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child:
-                          SavedCard(soundID: savedUserSounds.elementAt(index)),
-                    ),
-                  );
-                }),
-              ),
-            );
-          },
-        ),
-      ],
+                          );
+                        },
+                        child: SavedCard(
+                            soundID: savedUserSounds.elementAt(index)),
+                      ),
+                    );
+                  }),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

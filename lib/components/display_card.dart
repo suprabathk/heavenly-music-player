@@ -58,7 +58,7 @@ class _DisplayCardState extends State<DisplayCard> {
                 borderRadius: BorderRadius.circular(30),
                 image: DecorationImage(
                   image: imageProvider,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.fitHeight,
                 ),
               ),
               child: Column(
@@ -70,14 +70,14 @@ class _DisplayCardState extends State<DisplayCard> {
                     style: GoogleFonts.montserrat(
                       textStyle: const TextStyle(
                         color: Colors.white,
-                        fontSize: 25,
+                        fontSize: 23,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
                   Text(
                     soundDescription,
-                    style: const TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
                   ),
                 ],
               ),
