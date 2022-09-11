@@ -46,9 +46,13 @@ class _ProfilePageState extends State<ProfilePage> {
           children: [
             const SizedBox(height: 30),
             GestureDetector(
-              onLongPress: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const AddSound()));
+              onVerticalDragEnd: (x) {
+                if (x.primaryVelocity! > 6000) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AddSound()));
+                }
               },
               child: CircleAvatar(
                 radius: 50,

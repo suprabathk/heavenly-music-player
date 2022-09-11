@@ -131,9 +131,11 @@ class _DiscoverPageState extends State<DiscoverPage>
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(12),
-            child: Expanded(child: PrivateCollection(showDel: false)),
+          const Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: PrivateCollection(showDel: false),
+            ),
           ),
         ],
       ),
